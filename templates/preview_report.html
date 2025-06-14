@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Preview Report - SpeakUp{% endblock %}
+
+{% block extra_css %}
+<style>
+    .preview-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    .preview-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .preview-section {
+        margin-bottom: 1.5rem;
+        padding: 1.5rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+    .preview-section h3 {
+        color: #2c3e50;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+    }
+    .form-label {
+        font-weight: 500;
+        color: #2c3e50;
+    }
+    .form-control {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 0.75rem;
+    }
+    .form-control:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+    .btn-submit {
+        background: #3498db;
+        color: white;
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    .btn-submit:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+    }
+    .description-box {
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        border: 1px solid #dee2e6;
+    }
+    .btn-back {
+        background: #6c757d;
+        color: white;
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        margin-right: 1rem;
+    }
+    .btn-back:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="preview-container">
+    <div class="preview-header">
+        <h1>Preview Your Report</h1>
+        <p class="text-muted">Review and edit the extracted information before submitting</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('preview_report') }}">
+        <div class="preview-section">
+            <h3>Your Description</h3>
+            <div class="description-box">
+                {{ description }}
+            </div>
+        </div>
+
+        <div class="preview-section">
+            <h3>Extracted Information</h3>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="location" name="location" 
+                           value="{{ location }}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="time" class="form-label">Time of Incident</label>
+                    <input type="text" class="form-control" id="time" name="time" 
+                           value="{{ time }}" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select class="form-control" id="category" name="category" required>
+                        <option value="Harassment" {% if category == 'Harassment' %}selected{% endif %}>Harassment</option>
+                        <option value="Discrimination" {% if category == 'Discrimination' %}selected{% endif %}>Discrimination</option>
+                        <option value="Bullying" {% if category == 'Bullying' %}selected{% endif %}>Bullying</option>
+                        <option value="Academic Misconduct" {% if category == 'Academic Misconduct' %}selected{% endif %}>Academic Misconduct</option>
+                        <option value="Other" {% if category == 'Other' %}selected{% endif %}>Other</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="accused" class="form-label">Accused Person/Department</label>
+                    <input type="text" class="form-control" id="accused" name="accused" 
+                           value="{{ accused }}" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('report') }}" class="btn btn-back">Back to Edit</a>
+            <button type="submit" class="btn btn-submit">Submit Report</button>
+        </div>
+    </form>
+</div>
+{% endblock %} 

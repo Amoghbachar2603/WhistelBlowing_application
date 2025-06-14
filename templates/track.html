@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Track Report - SpeakUp{% endblock %}
+
+{% block extra_css %}
+<style>
+    .track-container {
+        max-width: 500px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .header h1 {
+        color: #2c3e50;
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+    .header p {
+        color: #666;
+        font-size: 0.9rem;
+    }
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #2c3e50;
+        font-weight: 500;
+    }
+    .form-group input {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+    .form-group input:focus {
+        outline: none;
+        border-color: #3498db;
+    }
+    .btn {
+        width: 100%;
+        padding: 0.8rem;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    .btn:hover {
+        background: #2980b9;
+    }
+    .info-box {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        border: 1px solid #dee2e6;
+    }
+    .info-box h4 {
+        color: #2c3e50;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+    .info-box p {
+        margin-bottom: 0.75rem;
+        color: #666;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+    .info-box p:last-child {
+        margin-bottom: 0;
+    }
+    .info-box ul {
+        margin: 0;
+        padding-left: 1.5rem;
+        color: #666;
+        font-size: 0.9rem;
+    }
+    .info-box li {
+        margin-bottom: 0.5rem;
+    }
+    .info-box li:last-child {
+        margin-bottom: 0;
+    }
+</style>
+{% endblock %}
+
+{% block page_content %}
+<div class="track-container">
+    <div class="header">
+        <h1>Track Your Report</h1>
+        <p>Enter your report credentials to view its status and updates</p>
+    </div>
+
+    <div class="info-box">
+        <h4>Need help finding your credentials?</h4>
+        <p>You can find your report credentials in:</p>
+        <ul>
+            <li>The confirmation page after submitting your report</li>
+            <li>The confirmation email sent to you</li>
+            <li>The success message shown after report submission</li>
+        </ul>
+        <p><strong>Note:</strong> Your reference ID starts with "REP" followed by 3 numbers (e.g., REP123)</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('track_report') }}">
+        <div class="form-group">
+            <label for="reference_id">Reference ID</label>
+            <input type="text" id="reference_id" name="reference_id" required 
+                   placeholder="e.g., REP123" pattern="REP[0-9]{3}" 
+                   title="Reference ID should start with REP followed by 3 numbers">
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required 
+                   placeholder="Enter your report password">
+        </div>
+
+        <button type="submit" class="btn">Track Report</button>
+    </form>
+</div>
+{% endblock %} 

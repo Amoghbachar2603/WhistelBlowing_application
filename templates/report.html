@@ -1,0 +1,295 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Report - SpeakUp{% endblock %}
+
+{% block extra_css %}
+<style>
+    .report-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    .form-label {
+        font-weight: 500;
+        color: #2c3e50;
+    }
+    .form-control {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 0.75rem;
+    }
+    .form-control:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+    .btn-submit {
+        background: #3498db;
+        color: white;
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    .btn-submit:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+    }
+    .btn-analyze {
+        background: #2ecc71;
+        color: white;
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        margin-right: 1rem;
+    }
+    .btn-analyze:hover {
+        background: #27ae60;
+        transform: translateY(-2px);
+    }
+    .voice-agent {
+        background: #f8f9fa;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+    }
+    .recording-indicator {
+        display: none;
+        color: #e74c3c;
+        margin-top: 1rem;
+    }
+    .recording-indicator.active {
+        display: block;
+    }
+    .loading {
+        display: none;
+        text-align: center;
+        margin: 1rem 0;
+    }
+    .loading.active {
+        display: block;
+    }
+    .extracted-info {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-top: 1rem;
+        border: 1px solid #dee2e6;
+    }
+    .extracted-field {
+        margin-bottom: 1rem;
+    }
+    .extracted-field label {
+        font-weight: 500;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+    .extracted-field p {
+        margin: 0;
+        padding: 0.5rem;
+        background: white;
+        border-radius: 5px;
+        border: 1px solid #dee2e6;
+    }
+    .button-group {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block page_content %}
+<div class="report-container">
+    <h1 class="text-center mb-4">Submit a Report</h1>
+    
+    <div class="voice-agent">
+        <h3>Voice Agent</h3>
+        <p class="text-muted">Speak your report and our AI will extract all the details</p>
+        
+        <div class="d-grid gap-2">
+            <button id="recordButton" class="btn btn-primary">
+                <i class="fas fa-microphone"></i> Start Recording
+            </button>
+        </div>
+        
+        <div id="recordingIndicator" class="recording-indicator">
+            <i class="fas fa-circle"></i> Recording in progress...
+        </div>
+        
+        <div id="loading" class="loading">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Processing your input...</p>
+        </div>
+    </div>
+
+    <form method="POST" action="{{ url_for('report') }}" id="reportForm">
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="4" required
+                      placeholder="Describe the incident in detail..."></textarea>
+        </div>
+
+        <div id="extractedInfo" class="extracted-info" style="display: none;">
+            <h4 class="mb-3">Extracted Information</h4>
+            
+            <div class="extracted-field">
+                <label>Location</label>
+                <p id="locationDisplay"></p>
+                <input type="hidden" id="location" name="location">
+            </div>
+
+            <div class="extracted-field">
+                <label>Time of Incident</label>
+                <p id="timeDisplay"></p>
+                <input type="hidden" id="time" name="time">
+            </div>
+
+            <div class="extracted-field">
+                <label>Category</label>
+                <p id="categoryDisplay"></p>
+                <input type="hidden" id="category" name="category">
+            </div>
+
+            <div class="extracted-field">
+                <label>Accused Person/Department</label>
+                <p id="accusedDisplay"></p>
+                <input type="hidden" id="accused" name="accused">
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button type="button" class="btn btn-analyze" id="analyzeButton" onclick="analyzeDescription()">
+                <i class="fas fa-magic"></i> Analyze with AI
+            </button>
+            <button type="submit" class="btn btn-submit" id="submitButton" disabled>Submit Report</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let mediaRecorder;
+let audioChunks = [];
+let isRecording = false;
+
+document.getElementById('recordButton').addEventListener('click', async () => {
+    if (!isRecording) {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+            
+            mediaRecorder.ondataavailable = (event) => {
+                audioChunks.push(event.data);
+            };
+            
+            mediaRecorder.onstop = async () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                const formData = new FormData();
+                formData.append('audio', audioBlob);
+                
+                document.getElementById('loading').classList.add('active');
+                
+                try {
+                    const response = await fetch('/transcribe', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        document.getElementById('description').value = data.text;
+                        // Trigger auto-fill
+                        autoFillFields(data.text);
+                    } else {
+                        alert('Error transcribing audio: ' + data.error);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error processing audio');
+                } finally {
+                    document.getElementById('loading').classList.remove('active');
+                }
+            };
+            
+            mediaRecorder.start();
+            isRecording = true;
+            document.getElementById('recordButton').textContent = 'Stop Recording';
+            document.getElementById('recordingIndicator').classList.add('active');
+            
+        } catch (error) {
+            console.error('Error accessing microphone:', error);
+            alert('Error accessing microphone');
+        }
+    } else {
+        mediaRecorder.stop();
+        isRecording = false;
+        document.getElementById('recordButton').textContent = 'Start Recording';
+        document.getElementById('recordingIndicator').classList.remove('active');
+    }
+});
+
+async function analyzeDescription() {
+    const description = document.getElementById('description').value;
+    if (!description) {
+        alert('Please enter a description first');
+        return;
+    }
+    
+    try {
+        document.getElementById('loading').classList.add('active');
+        const response = await fetch('/extract_fields', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ description: description })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            displayExtractedInfo(data.fields);
+            document.getElementById('submitButton').disabled = false;
+        } else {
+            alert('Error analyzing description: ' + data.error);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error analyzing description');
+    } finally {
+        document.getElementById('loading').classList.remove('active');
+    }
+}
+
+function displayExtractedInfo(fields) {
+    document.getElementById('extractedInfo').style.display = 'block';
+    
+    // Update display and hidden fields
+    document.getElementById('locationDisplay').textContent = fields.location || 'Not specified';
+    document.getElementById('location').value = fields.location || '';
+    
+    document.getElementById('timeDisplay').textContent = fields.time || 'Not specified';
+    document.getElementById('time').value = fields.time || '';
+    
+    document.getElementById('categoryDisplay').textContent = fields.category || 'Other';
+    document.getElementById('category').value = fields.category || 'Other';
+    
+    document.getElementById('accusedDisplay').textContent = fields.accused || 'Not specified';
+    document.getElementById('accused').value = fields.accused || '';
+}
+
+function autoFillFields(text) {
+    analyzeDescription();
+}
+</script>
+{% endblock %}

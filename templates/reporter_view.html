@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}Report Submitted - SpeakUp{% endblock %}
+
+{% block extra_css %}
+<style>
+    .credentials-card {
+        background: #f8f9fa;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        border: 1px solid #dee2e6;
+    }
+    .credential-item {
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        border: 1px solid #dee2e6;
+    }
+    .credential-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+    .credential-value {
+        color: #2c3e50;
+        font-weight: 500;
+        font-size: 1.1rem;
+    }
+    .report-details {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    .tracking-timeline {
+        position: relative;
+        padding-left: 2rem;
+    }
+    .tracking-item {
+        position: relative;
+        padding-bottom: 2rem;
+    }
+    .tracking-item:last-child {
+        padding-bottom: 0;
+    }
+    .tracking-item::before {
+        content: '';
+        position: absolute;
+        left: -2rem;
+        top: 0;
+        width: 1px;
+        height: 100%;
+        background: #dee2e6;
+    }
+    .tracking-item:last-child::before {
+        height: 0;
+    }
+    .tracking-dot {
+        position: absolute;
+        left: -2.25rem;
+        top: 0.25rem;
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 50%;
+        background: #3498db;
+        border: 2px solid white;
+    }
+    .tracking-content {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+    }
+    .tracking-time {
+        color: #6c757d;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+    }
+    .status-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+    }
+    .status-pending {
+        background: #ffeeba;
+        color: #856404;
+    }
+    .status-in-progress {
+        background: #b8daff;
+        color: #004085;
+    }
+    .status-resolved {
+        background: #c3e6cb;
+        color: #155724;
+    }
+</style>
+{% endblock %}
+
+{% block page_content %}
+<div class="container">
+    <div class="credentials-card">
+        <h3 class="mb-4">Your Report Credentials</h3>
+        <p class="text-muted mb-4">Please save these credentials to track your report status</p>
+        
+        <div class="credential-item">
+            <div class="credential-label">Reference ID</div>
+            <div class="credential-value">{{ reference_id }}</div>
+        </div>
+        
+        <div class="credential-item">
+            <div class="credential-label">Password</div>
+            <div class="credential-value">{{ password }}</div>
+        </div>
+    </div>
+
+    <div class="report-details">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3>Report Details</h3>
+            <span class="status-badge status-{{ report.status.lower() }}">{{ report.status }}</span>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="text-muted">Category</label>
+                    <p class="mb-0">{{ report.category }}</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="text-muted">Location</label>
+                    <p class="mb-0">{{ report.location }}</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="text-muted">Time of Incident</label>
+                    <p class="mb-0">{{ report.time }}</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="text-muted">Accused Person/Department</label>
+                    <p class="mb-0">{{ report.accused }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label class="text-muted">Description</label>
+            <p class="mb-0">{{ report.description }}</p>
+        </div>
+
+        <h4 class="mb-4">Tracking Updates</h4>
+        {% if trackings %}
+            <div class="tracking-timeline">
+                {% for tracking in trackings %}
+                <div class="tracking-item">
+                    <div class="tracking-dot"></div>
+                    <div class="tracking-content">
+                        <p class="mb-0">{{ tracking.message }}</p>
+                        <div class="tracking-time">
+                            {{ tracking.timestamp.strftime('%Y-%m-%d %H:%M') }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">No tracking updates yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

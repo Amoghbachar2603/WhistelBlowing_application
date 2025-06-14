@@ -1,0 +1,372 @@
+{% extends "base.html" %}
+
+{% block title %}RUBIX - Secure Whistleblowing Platform{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --background-color: #f8f9fa;
+        --text-color: #2c3e50;
+    }
+
+    .main-content {
+        padding: 0;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+
+    .hero-cta {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, #2980b9 100%);
+        padding: 4rem 2rem;
+        text-align: center;
+        color: white;
+        margin-bottom: 4rem;
+    }
+
+    .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .hero-title {
+        font-size: 2.8rem;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+    }
+
+    .hero-description {
+        font-size: 1.2rem;
+        margin-bottom: 2.5rem;
+        opacity: 0.9;
+        line-height: 1.6;
+    }
+
+    .cta-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 1rem 2.5rem;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background: white;
+        color: var(--secondary-color);
+    }
+
+    .btn-secondary {
+        background: var(--accent-color);
+        color: white;
+    }
+
+    .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .features-section {
+        padding: 4rem 2rem;
+        background: white;
+    }
+
+    .section-title {
+        text-align: center;
+        color: var(--primary-color);
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
+        font-weight: 700;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: center;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        color: var(--secondary-color);
+        margin-bottom: 1.5rem;
+    }
+
+    .feature-title {
+        color: var(--primary-color);
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .feature-description {
+        color: #666;
+        line-height: 1.6;
+    }
+
+    .companies-section {
+        padding: 4rem 0;
+        background: var(--background-color);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .companies-title {
+        text-align: center;
+        color: var(--primary-color);
+        font-size: 2rem;
+        margin-bottom: 3rem;
+        font-weight: 600;
+    }
+
+    .companies-track {
+        display: flex;
+        animation: scroll 40s linear infinite;
+        width: calc(250px * 20);
+    }
+
+    .companies-track:hover {
+        animation-play-state: paused;
+    }
+
+    .company-logo {
+        height: 60px;
+        width: 200px;
+        margin: 0 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        background: white;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .company-logo:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .company-logo img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+    }
+
+    .trust-section {
+        padding: 4rem 2rem;
+        background: white;
+        text-align: center;
+    }
+
+    .trust-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .trust-item {
+        padding: 2rem;
+        background: var(--background-color);
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .trust-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--secondary-color);
+        margin-bottom: 1rem;
+    }
+
+    .trust-label {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+        font-weight: 500;
+    }
+
+    @keyframes scroll {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(calc(-250px * 10));
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .cta-buttons {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block page_content %}
+<div class="hero-cta">
+    <div class="hero-content">
+        <h1 class="hero-title">Make Your Voice Heard Safely</h1>
+        <p class="hero-description">Join thousands of organizations using RUBIX to create safer, more transparent workplaces through secure and anonymous reporting.</p>
+        <div class="cta-buttons">
+            <a href="{{ url_for('report') }}" class="btn btn-primary">Report an Incident</a>
+            <a href="{{ url_for('track_report') }}" class="btn btn-secondary">Track Your Report</a>
+            <a href="{{ url_for('admin') }}" class="btn btn-primary">Admin Access</a>
+        </div>
+    </div>
+</div>
+
+<div class="features-section">
+    <h2 class="section-title">Why Choose RUBIX?</h2>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3 class="feature-title">100% Anonymous</h3>
+            <p class="feature-description">Your identity is protected with state-of-the-art encryption. Report with confidence, knowing your privacy is our priority.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <h3 class="feature-title">Real-time Updates</h3>
+            <p class="feature-description">Track your report's progress and receive instant notifications about any updates or actions taken.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3 class="feature-title">Verified Process</h3>
+            <p class="feature-description">Every report is handled by trained professionals who ensure thorough investigation and appropriate action.</p>
+        </div>
+    </div>
+</div>
+
+<div class="companies-section">
+    <h2 class="companies-title">Trusted by Leading Organizations</h2>
+    <div class="companies-track">
+        <!-- First set of logos -->
+        <div class="company-logo">
+            <img src="https://www.vectorlogo.zone/logos/google/google-ar21.svg" alt="Google">
+        </div>
+        <div class="company-logo">
+            <img src="https://www.vectorlogo.zone/logos/microsoft/microsoft-ar21.svg" alt="Microsoft">
+        </div>
+        <div class="company-logo">
+            <img src="https://www.vectorlogo.zone/logos/apple/apple-ar21.svg" alt="Apple">
+        </div>
+        <div class="company-logo">
+            <img src="https://www.vectorlogo.zone/logos/ibm/ibm-ar21.svg" alt="IBM">
+        </div>
+        <div class="company-logo">
+            <img src="https://www.vectorlogo.zone/logos/oracle/oracle-ar21.svg" alt="Oracle">
+        </div>
+        <div class="company-logo">
+            <img src="https://www.vectorlogo.zone/logos/salesforce/salesforce-ar21.svg" alt="Salesforce">
+        </div>
+        <div class="company-logo">
+            <img src="https://www.vectorlogo.zone/logos/adobe/adobe-ar21.svg" alt="Adobe">
+        </div>
+        <div class="company-logo">
+            <img src="https://www.vectorlogo.zone/logos/dell/dell-ar21.svg" alt="Dell">
+        </div>
+        <div class="company-logo">
+            <img src="https://www.vectorlogo.zone/logos/intel/intel-ar21.svg" alt="Intel">
+        </div>
+        <div class="company-logo">
+            <img src="https://www.vectorlogo.zone/logos/cisco/cisco-ar21.svg" alt="Cisco">
+        </div>
+        <!-- Duplicate set for seamless loop -->
+        <div class="company-logo">
+            <img src="https://www.vectorlogo.zone/logos/google/google-ar21.svg" alt="Google">
+        </div>
+        <div class="company-logo">
+            <img src="https://www.vectorlogo.zone/logos/microsoft/microsoft-ar21.svg" alt="Microsoft">
+        </div>
+        <div class="company-logo">
+            <img src="https://www.vectorlogo.zone/logos/apple/apple-ar21.svg" alt="Apple">
+        </div>
+        <div class="company-logo">
+            <img src="https://www.vectorlogo.zone/logos/ibm/ibm-ar21.svg" alt="IBM">
+        </div>
+        <div class="company-logo">
+            <img src="https://www.vectorlogo.zone/logos/oracle/oracle-ar21.svg" alt="Oracle">
+        </div>
+        <div class="company-logo">
+            <img src="https://www.vectorlogo.zone/logos/salesforce/salesforce-ar21.svg" alt="Salesforce">
+        </div>
+        <div class="company-logo">
+            <img src="https://www.vectorlogo.zone/logos/adobe/adobe-ar21.svg" alt="Adobe">
+        </div>
+        <div class="company-logo">
+            <img src="https://www.vectorlogo.zone/logos/dell/dell-ar21.svg" alt="Dell">
+        </div>
+        <div class="company-logo">
+            <img src="https://www.vectorlogo.zone/logos/intel/intel-ar21.svg" alt="Intel">
+        </div>
+        <div class="company-logo">
+            <img src="https://www.vectorlogo.zone/logos/cisco/cisco-ar21.svg" alt="Cisco">
+        </div>
+    </div>
+</div>
+
+<div class="trust-section">
+    <h2 class="section-title">Our Impact</h2>
+    <div class="trust-grid">
+        <div class="trust-item">
+            <div class="trust-number">10K+</div>
+            <div class="trust-label">Reports Handled</div>
+        </div>
+        <div class="trust-item">
+            <div class="trust-number">98%</div>
+            <div class="trust-label">Resolution Rate</div>
+        </div>
+        <div class="trust-item">
+            <div class="trust-number">24/7</div>
+            <div class="trust-label">Support Available</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

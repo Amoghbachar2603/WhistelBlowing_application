@@ -15,16 +15,16 @@ RUBIX is a secure and anonymous platform for reporting workplace incidents. It p
 ## Platform Screenshots
 
 ### Report Submission Page
-![Report Page](static/images/pic2.png)
+<img src="static/images/pic2.png" width="400"/>
 
 ### Report Tracking Page
-![Admin Dashboard](static/images/pic3.png)
+<img src="static/images/pic3.png" width="400"/>
 
 ### Admin Dashboard
-![Tracking Page](static/images/pic4.png)
+<img src="static/images/pic4.png" width="400"/>
 
 ### Admin login
-![Additional Features](static/images/pic5.png)
+<img src="static/images/pic5.png" width="400"/>
 
 ## Technology Stack
 

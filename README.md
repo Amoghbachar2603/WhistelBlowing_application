@@ -146,9 +146,3 @@ For support, please email support@rubix.com or create an issue in the repository
 
 ---
 
-*Note: The images in the static/images directory should be:*
-- *pic1.png: Screenshot of the home page*
-- *pic2.png: Screenshot of the report submission page*
-- *pic3.png: Screenshot of the admin dashboard*
-- *pic4.png: Screenshot of the report tracking page*
-- *pic5.png: Screenshot of additional features*
